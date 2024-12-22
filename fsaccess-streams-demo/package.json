@@ -1,0 +1,16 @@
+{
+  "name": "fsaccess-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "web-dev-server --node-resolve --open --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Carlos Araya <carlos.araya@gmail.com> (https://publishing-project.rivendellweb.net/)",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@web/dev-server": "^0.4.6"
+  }
+}
