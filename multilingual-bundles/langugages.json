@@ -1,0 +1,17 @@
+{
+  "en": {
+    "greeting": "Hello",
+    "welcomeMessage": "Welcome to our app!",
+    "dynamicGreeting": "Hello, {{name}}!"
+  },
+  "es": {
+    "greeting": "Hola",
+    "welcomeMessage": "¡Bienvenido a nuestra aplicación!",
+    "dynamicGreeting": "¡Hola, {{name}}!"
+  },
+  "fr": {
+    "greeting": "Bonjour",
+    "welcomeMessage": "Bienvenue dans notre application !",
+    "dynamicGreeting": "Bonjour, {{name}} !"
+  }
+}

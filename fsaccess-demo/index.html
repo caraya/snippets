@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-size: 1.25rem;
+    }
+
+    textarea {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      inline-size: 75vw;
+      block-size: 50vh;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Filesystem Access API</h1>
+
+  <p>This is an example of the [filesystem access API](https://wicg.github.io/file-system-access/)</p>
+
+  <div class="button-wrapper">
+    <button id="openButton">Open File</button>
+    <button id="saveButton">Save File</button>
+    <button id="saveAsButton">Save As Button</button>
+  </div>
+
+  <div class="content-wrapper">
+    <textarea name="content" id="content"></textarea>
+  </div>
+
+  <script>
+    let fileHandle; // Store the file handle globally
+
+    const pickerOpts = {
+      types: [
+        {
+          description: "Text Files",
+          accept: {
+            "text/*": [
+              ".md",
+              ".markdown",
+              ".txt",
+              ".js",
+              ".css",
+            ],
+            "text/html": [
+              ".html",
+              ".htm",
+            ],
+            "text/xml": [
+              ".xml",
+            ],
+          }
+        },
+        {
+          description: "Images",
+          accept: {
+            "image/*": [ ".png", ".gif", ".jpeg", ".jpg", ".webp", ".avif", ".heif" ],
+          },
+        },
+      ],
+      excludeAcceptAllOption: true,
+      multiple: false,
+    };
+
+    async function openFile() {
+      try {
+        // Open file picker and get file handle
+        [ fileHandle ] = await window.showOpenFilePicker(pickerOpts);
+
+        // Get the file contents
+        const file = await fileHandle.getFile();
+        const contents = await file.text();
+
+        // Display the file contents in the textarea
+        document.getElementById("content").value = contents;
+      } catch (err) {
+        console.error("Error opening file: ", err.message);
+      }
+    }
+
+    async function saveFile() {
+      if (!fileHandle) {
+        alert("No file opened yet. Please open a file first.");
+        return;
+      }
+      try {
+        // Get the contents from the textarea
+        const contents = document.getElementById("content").value;
+
+        // Create a writable stream
+        const writable = await fileHandle.createWritable();
+        await writable.write(contents);
+
+        // Close the file
+        await writable.close();
+        alert("File saved successfully!");
+      } catch (err) {
+        console.error("Error saving file: ", err.message);
+      }
+    }
+
+    async function saveAs() {
+      try {
+        // Show save file picker
+        const newFileHandle = await window.showSaveFilePicker(pickerOpts);
+
+        // Get the contents from the textarea
+        const contents = document.getElementById("content").value;
+
+        // Create a writable stream
+        const writable = await newFileHandle.createWritable();
+        await writable.write(contents);
+
+        // Close the file
+        await writable.close();
+        alert("File saved successfully!");
+
+        // Update the global file handle
+        fileHandle = newFileHandle;
+      } catch (err) {
+        console.error("Error saving file as: ", err.message);
+      }
+    }
+
+    document
+      .getElementById("openButton")
+      .addEventListener("click", openFile);
+
+    document
+      .getElementById("saveButton")
+      .addEventListener("click", saveFile);
+
+    document
+      .getElementById("saveAsButton")
+      .addEventListener("click", saveAs);  </script>
+</body>
+
+</html>

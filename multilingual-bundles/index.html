@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multilingual App with Fetch</title>
+</head>
+
+<body>
+  <h1 id="static-greeting"></h1>
+  <p id="welcome-message"></p>
+  <p id="dynamic-greeting"></p>
+
+  <select id="language-selector">
+    <option value="en">English</option>
+    <option value="es">Español</option>
+    <option value="fr">Français</option>
+  </select>
+
+  <script>
+    let translations = {}; // To store the loaded translations
+    let currentLanguage = 'en'; // Default language
+
+    // Function to fetch the translations
+    function loadTranslations() {
+      return fetch('./langugages.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to load translations');
+          }
+          return response.json();
+        })
+        .then(data => {
+          translations = data;
+          updateStaticText();
+          updateDynamicText('John'); // Example dynamic name
+        })
+        .catch(error => {
+          console.error('Error fetching translations:', error);
+        });
+    }
+
+    // Function to update static text based on the current language
+    function updateStaticText() {
+      if (translations[ currentLanguage ]) {
+        document.getElementById('static-greeting').innerText = translations[ currentLanguage ].greeting;
+        document.getElementById('welcome-message').innerText = translations[ currentLanguage ].welcomeMessage;
+      }
+    }
+
+    // Function to update dynamic text with a variable (e.g., name)
+    function updateDynamicText(name) {
+      if (translations[ currentLanguage ]) {
+        const dynamicTemplate = translations[ currentLanguage ].dynamicGreeting;
+        const dynamicGreeting = dynamicTemplate.replace('{{name}}', name);
+        document.getElementById('dynamic-greeting').innerText = dynamicGreeting;
+      }
+    }
+
+    // Event listener for changing language
+    document.getElementById('language-selector').addEventListener('change', function () {
+      currentLanguage = this.value;
+      updateStaticText();
+      updateDynamicText('John'); // Example dynamic name
+    });
+
+    // Initial setup to load translations and set the default language
+    window.onload = function () {
+      loadTranslations(); // Fetch translations from the JSON file
+    };
+  </script>
+</body>
+
+</html>
